@@ -60,15 +60,29 @@ jobs:
         run: terraform show -json tfplan.out > tfplan.json
         working-directory: ./terraform
 
+      # Checkout the branch you want Infracost to compare costs against, most commonly the target branch.
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: '${{ github.event.pull_request.base.ref }}'
       - name: Setup Infracost
         uses: infracost/actions/setup@v3
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
-
       - name: Run Infracost
         run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost.json
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json
 
+      # Checkout the PR branch with your infrastructure changes.
+      - uses: actions/checkout@v4
+      - name: Run Infracost
+        shell: bash
+        run: |
+          infracost breakdown --path=./terraform \
+                              --format=json \
+                              --compare-to=/tmp/infracost-base.json \
+                              --out-file=/tmp/infracost.json
+                              
       - name: Post Infracost Comment
         run: |
           infracost comment github --path=/tmp/infracost.json \
