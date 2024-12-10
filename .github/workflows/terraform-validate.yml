@@ -1,4 +1,4 @@
-name: Terraform Plan
+name: Terraform Validate
 run-name: ${{ github.actor }} triggered the pipeline
 
 on:
