@@ -82,7 +82,12 @@ jobs:
                               --format=json \
                               --compare-to=/tmp/infracost-base.json \
                               --out-file=/tmp/infracost.json
-                              
+
+      # generate the html report based on the JSON output from last step
+      - name: Generate Infracost Report
+        run: |
+          infracost output --path=/tmp/infracost.json --show-skipped --format html --out-file report.html
+
       - name: Post Infracost Comment
         run: |
           infracost comment github --path=/tmp/infracost.json \
