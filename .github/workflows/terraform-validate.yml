@@ -2,6 +2,7 @@ name: Terraform Plan
 run-name: ${{ github.actor }} triggered the pipeline
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - 'infra_features'

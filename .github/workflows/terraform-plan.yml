@@ -2,6 +2,7 @@ name: Terraform Plan and Cost Estimation
 run-name: ${{ github.actor }} triggered the pipeline
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - 'infra_main'
