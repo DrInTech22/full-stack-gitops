@@ -71,22 +71,17 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
       - name: Run Infracost
         run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json
+          infracost breakdown --path=./terraform/tfplan.json --format=json --out-file=/tmp/infracost-base.json
 
       # Checkout the PR branch with your infrastructure changes.
       - uses: actions/checkout@v4
       - name: Run Infracost
         shell: bash
         run: |
-          infracost diff --path=./terraform \
+          infracost diff --path=./terraform/tfplan.json \
                               --format=json \
                               --compare-to=/tmp/infracost-base.json \
                               --out-file=/tmp/infracost.json
-
-      # generate the html report based on the JSON output from last step
-      - name: Generate Infracost Report
-        run: |
-          infracost output --path=/tmp/infracost.json --show-skipped --format html --out-file report.html
 
       - name: Post Infracost Comment
         run: |
