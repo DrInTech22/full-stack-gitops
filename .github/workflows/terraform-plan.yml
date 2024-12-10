@@ -8,7 +8,7 @@ on:
     branches:
       - 'infra_main'
     paths:
-      - './terraform'
+      - './terraform/**'
 
 env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
