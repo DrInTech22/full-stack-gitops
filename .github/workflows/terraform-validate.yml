@@ -16,13 +16,12 @@ env:
   TF_AMI_ID: ${{ vars.TF_AMI_ID }}
   TF_INSTANCE_TYPE: ${{ vars.TF_INSTANCE_TYPE }}
   TF_KEY_PAIR_NAME: ${{ vars.TF_KEY_PAIR_NAME }}
-  TF_PRIVATE_KEY_PATH: ${{ secrets.TF_PRIVATE_KEY_PATH }}
+  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
   TF_DOMAIN_NAME: ${{ vars.TF_DOMAIN_NAME }}
   TF_FRONTEND_DOMAIN: ${{ vars.TF_FRONTEND_DOMAIN }}
   TF_DB_DOMAIN: ${{ vars.TF_DB_DOMAIN }}
   TF_TRAEFIK_DOMAIN: ${{ vars.TF_TRAEFIK_DOMAIN }}
   TF_CERT_EMAIL: ${{ secrets.TF_CERT_EMAIL }}
-
 jobs:
   build-infra:
     name: terraform-ci-cd
@@ -30,6 +29,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Write Private Key to File
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+        env:
+          TF_PRIVATE_KEY_PATH: ./${{ vars.TF_KEY_PAIR_NAME }}.pem
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
       - name: Terraform Init
