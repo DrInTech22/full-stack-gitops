@@ -77,10 +77,11 @@ jobs:
       - name: Run Infracost
         shell: bash
         run: |
-          infracost diff --path=./terraform \
+          infracost breakdown --path=/tmp/infracost-new.json --format=json --out-file=/tmp/infracost-base.json && pwd
+          infracost diff --path=../tfplan.json \
                               --format=json \
-                              --compare-to=/tmp/infracost-new.json \
-                              --out-file=/tmp/infracost.json && cat /tmp/infracost.json
+                              --compare-to=/tmp/infracost-base.json \
+                              --out-file=/tmp/infracost.json 
 
       - name: Post Infracost Comment
         run: |
