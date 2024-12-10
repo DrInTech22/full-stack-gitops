@@ -78,7 +78,7 @@ jobs:
       - name: Run Infracost
         shell: bash
         run: |
-          infracost breakdown --path=./terraform \
+          infracost diff --path=./terraform \
                               --format=json \
                               --compare-to=/tmp/infracost-base.json \
                               --out-file=/tmp/infracost.json
