@@ -6,8 +6,8 @@ on:
   push:
     branches:
       - 'infra_features'
-    path:
-      - '../terraform/**'
+    # path:
+    #   - '../terraform/**'
 
 env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
