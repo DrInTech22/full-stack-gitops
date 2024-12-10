@@ -10,4 +10,4 @@ db_domain       = "db.cv1.drintech.online"
 traefik_domain  = "traefik.cv1.drintech.online"
 cert_email      = "admin@example.com" # replace with a valid email
 
-Still hello....
+Let's move on
