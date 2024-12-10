@@ -35,10 +35,10 @@ jobs:
         
       - name: Write Private Key to File
         run: |
-          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
-          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_VAR_key_pair_name }}.pem
+          chmod 600 ${{ vars.TF_VAR_key_pair_name }}.pem
         env:
-          TF_VAR_private_key_path: ./${{ vars.TF_KEY_PAIR_NAME }}.pem
+          TF_VAR_private_key_path: ./${{ vars.TF_VAR_key_pair_name }}.pem
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
