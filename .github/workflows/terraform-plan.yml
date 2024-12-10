@@ -4,6 +4,7 @@ run-name: ${{ github.actor }} triggered the pipeline
 on:
   workflow_dispatch:
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
       - 'infra_main'
     paths:
@@ -16,7 +17,7 @@ env:
   TF_AMI_ID: ${{ vars.TF_AMI_ID }}
   TF_INSTANCE_TYPE: ${{ vars.TF_INSTANCE_TYPE }}
   TF_KEY_PAIR_NAME: ${{ vars.TF_KEY_PAIR_NAME }}
-  TF_PRIVATE_KEY_PATH: ${{ secrets.TF_PRIVATE_KEY_PATH }}
+  PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
   TF_DOMAIN_NAME: ${{ vars.TF_DOMAIN_NAME }}
   TF_FRONTEND_DOMAIN: ${{ vars.TF_FRONTEND_DOMAIN }}
   TF_DB_DOMAIN: ${{ vars.TF_DB_DOMAIN }}
@@ -31,6 +32,13 @@ jobs:
     steps:
       - name: Checkout PR Branch
         uses: actions/checkout@v2
+        
+      - name: Write Private Key to File
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+        env:
+          TF_PRIVATE_KEY_PATH: ./${{ vars.TF_KEY_PAIR_NAME }}.pem
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
