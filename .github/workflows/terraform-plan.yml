@@ -7,8 +7,8 @@ on:
     types: [opened, synchronize, reopened]
     branches:
       - 'infra_main'
-    paths:
-      - './terraform/**'
+    # paths:
+    #   - './terraform/**'
 
 env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
