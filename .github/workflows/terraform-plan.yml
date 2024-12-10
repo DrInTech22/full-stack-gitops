@@ -1,0 +1,67 @@
+name: Terraform Plan and Cost Estimation
+run-name: ${{ github.actor }} triggered the pipeline
+
+on:
+  pull_request:
+    branches:
+      - 'infra_main'
+    paths:
+      - './terraform'
+
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  TF_AWS_REGION: ${{ vars.TF_AWS_REGION }}
+  TF_AMI_ID: ${{ vars.TF_AMI_ID }}
+  TF_INSTANCE_TYPE: ${{ vars.TF_INSTANCE_TYPE }}
+  TF_KEY_PAIR_NAME: ${{ vars.TF_KEY_PAIR_NAME }}
+  TF_PRIVATE_KEY_PATH: ${{ secrets.TF_PRIVATE_KEY_PATH }}
+  TF_DOMAIN_NAME: ${{ vars.TF_DOMAIN_NAME }}
+  TF_FRONTEND_DOMAIN: ${{ vars.TF_FRONTEND_DOMAIN }}
+  TF_DB_DOMAIN: ${{ vars.TF_DB_DOMAIN }}
+  TF_TRAEFIK_DOMAIN: ${{ vars.TF_TRAEFIK_DOMAIN }}
+  TF_CERT_EMAIL: ${{ secrets.TF_CERT_EMAIL }}
+
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR Branch
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan.out
+        working-directory: ./terraform
+
+      - name: Save Plan JSON
+        id: save-plan
+        run: terraform show -json tfplan.out > tfplan.json
+        working-directory: ./terraform
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Run Infracost
+        run: |
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost.json
+
+      - name: Post Infracost Comment
+        run: |
+          infracost comment github --path=/tmp/infracost.json \
+                                   --repo=$GITHUB_REPOSITORY \
+                                   --github-token=${{ github.token }} \
+                                   --pull-request=${{ github.event.pull_request.number }} \
+                                   --behavior=update

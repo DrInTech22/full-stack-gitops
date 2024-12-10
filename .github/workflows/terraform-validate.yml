@@ -1,0 +1,42 @@
+name: Terraform Plan
+run-name: ${{ github.actor }} triggered the pipeline
+
+on:
+  push:
+    branches:
+      - 'infra_features'
+    path:
+      - '../terraform'
+
+env:
+  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  TF_AWS_REGION: ${{ vars.TF_AWS_REGION }}
+  TF_AMI_ID: ${{ vars.TF_AMI_ID }}
+  TF_INSTANCE_TYPE: ${{ vars.TF_INSTANCE_TYPE }}
+  TF_KEY_PAIR_NAME: ${{ vars.TF_KEY_PAIR_NAME }}
+  TF_PRIVATE_KEY_PATH: ${{ secrets.TF_PRIVATE_KEY_PATH }}
+  TF_DOMAIN_NAME: ${{ vars.TF_DOMAIN_NAME }}
+  TF_FRONTEND_DOMAIN: ${{ vars.TF_FRONTEND_DOMAIN }}
+  TF_DB_DOMAIN: ${{ vars.TF_DB_DOMAIN }}
+  TF_TRAEFIK_DOMAIN: ${{ vars.TF_TRAEFIK_DOMAIN }}
+  TF_CERT_EMAIL: ${{ secrets.TF_CERT_EMAIL }}
+
+jobs:
+  build-infra:
+    name: terraform-ci-cd
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./terraform
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+        working-directory: ./terraform
+ 
