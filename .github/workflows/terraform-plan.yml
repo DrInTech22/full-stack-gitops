@@ -66,7 +66,7 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
       - name: Run Infracost
         run: |
-          infracost breakdown --path=../tfplan.json --format=json --out-file=/tmp/infracost.json && pwd && cat /tmp/infracost.json
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost.json && pwd && cat /tmp/infracost.json
 
       # Checkout the branch you want Infracost to compare costs against, most commonly the target branch.
       - name: Checkout base branch
