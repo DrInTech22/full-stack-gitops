@@ -97,5 +97,11 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           file-path: /tmp/tfplan.txt
+          pr-number: ${{ github.event.pull_request.number }}
+          comment-tag: comment-output
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v3
+        with:
           file-path: /tmp/infracost-new.txt
           pr-number: ${{ github.event.pull_request.number }}
+          comment-tag: comment-output
