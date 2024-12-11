@@ -16,6 +16,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ansible_inventory
+          github-token: ${{ secrets.TOKEN }} 
+          run-id: ${{ github.event.client_payload.run_id }}
 
       - name: Verify Ansible Inventory
         run: |
