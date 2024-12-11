@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Debug Event Context
+        run: |
+          echo "Full GitHub Context:"
+          echo '${{ toJson(github) }}'
 
       - name: Write Private Key to File
         run: |
