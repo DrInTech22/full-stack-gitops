@@ -19,7 +19,7 @@ jobs:
           chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
 
       - name: Download Ansible Inventory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ansible_inventory
           github-token: ${{ secrets.TOKEN }} 
