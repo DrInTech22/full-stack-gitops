@@ -1,6 +1,7 @@
 name: Ansible Monitoring
 
 on:
+  workflow_dispatch:
   repository_dispatch:
     types:
       - ansible-monitoring
@@ -11,6 +12,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Write Private Key to File
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
 
       - name: Download Ansible Inventory
         uses: actions/download-artifact@v3
