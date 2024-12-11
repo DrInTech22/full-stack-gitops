@@ -6,8 +6,6 @@
     mode: '0755'
   loop:
     - /home/ubuntu/monitoring
-    - /home/ubuntu/frontend
-    - /home/ubuntu/backend
     - /home/ubuntu/traefik
 
 - name: Ensure acme.json file exists
