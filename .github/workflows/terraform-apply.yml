@@ -5,9 +5,13 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: 'Choose the Terraform operation (apply or destroy)'
+        description: 'Choose the Terraform operation'
         required: true
         default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
   push:
     branches:
       - 'infra_main'
