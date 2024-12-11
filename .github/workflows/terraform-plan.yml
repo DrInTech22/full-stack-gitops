@@ -105,8 +105,7 @@ jobs:
             const plan = fs.readFileSync('/tmp/tfplan.txt', 'utf8');
             const infracost = fs.readFileSync('/tmp/infracost-new.txt', 'utf8');
             
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            const output = `#### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
             
             <details><summary>Show Plan</summary>
             
