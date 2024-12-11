@@ -2,6 +2,7 @@ name: Simple Workflow
 
 on:
   workflow_dispatch:
+  workflow_run:
   push:
     branches:
       - 'infra_features'
