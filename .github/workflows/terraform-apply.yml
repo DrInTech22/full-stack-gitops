@@ -70,8 +70,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ansible_inventory
-          path: ./inventory.ini
-        working-directory: ./terraform
+          path: ./terraform/inventory.ini
       - name: Save Public IP 
         run: |
           echo "public_ip=$(terraform output -raw instance_public_ip)" > public_ip_env.txt
