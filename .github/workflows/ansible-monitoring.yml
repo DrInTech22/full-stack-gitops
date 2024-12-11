@@ -1,11 +1,11 @@
 name: Ansible Monitoring
 
-# on:
-#   workflow_dispatch:
-#   repository_dispatch:
-#     types:
-#       - ansible-monitoring
-
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
 jobs:
   monitoring-stack-deploy:
     runs-on: ubuntu-latest
