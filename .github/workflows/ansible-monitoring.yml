@@ -1,0 +1,35 @@
+name: Ansible Monitoring
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - ansible-monitoring
+
+jobs:
+  monitoring-stack-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download Ansible Inventory
+        uses: actions/download-artifact@v3
+        with:
+          name: ansible_inventory
+
+      - name: Verify Ansible Inventory
+        run: |
+          cat inventory.ini
+
+      - name: "Install Ansible"
+        uses: alex-oleshkevich/setup-ansible@v1.0.1
+        with:
+          version: "9.3.0"
+
+      - name: Run Ansible Playbook
+        run: |
+          ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.ini ./ansible/playbook.yml \
+              --extra-vars "frontend_domain=${{ vars.TF_FRONTEND_DOMAIN }} \
+                traefik_domain=${{ vars.TF_TRAEFIK_DOMAIN }} \
+                cert_email=${{ secrets.TF_CERT_EMAIL }}"
