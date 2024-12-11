@@ -3,6 +3,8 @@ name: Terraform Apply
 
 on:
   workflow_dispatch:
+    branches:
+      - infra_features
     inputs:
       operation:
         description: 'Choose the Terraform operation'
