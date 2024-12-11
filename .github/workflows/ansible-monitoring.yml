@@ -17,6 +17,7 @@ jobs:
         run: |
           echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
           chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          echo "${{ github.event.client_payload.run_id }}"
 
       - name: Download Ansible Inventory
         uses: actions/download-artifact@v4
