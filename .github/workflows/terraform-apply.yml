@@ -83,6 +83,7 @@ jobs:
       - name: Trigger Ansible Monitoring Workflow
         uses: peter-evans/repository-dispatch@v2
         with:
+          token: ${{ secrets.TOKEN }}
           event-type: ansible-monitoring
 
 
