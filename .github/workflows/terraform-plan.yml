@@ -118,9 +118,11 @@ jobs:
             
             #### New Infracost Breakdown 💰
             <details><summary>Show Breakdown</summary>
+
             \`\`\`sh
             ${infracost}
             \`\`\`
+            
             </details>
             
             *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
