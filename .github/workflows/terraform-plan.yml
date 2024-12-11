@@ -118,7 +118,7 @@ jobs:
             
             #### New Infracost Breakdown 💰
             <details><summary>Show Breakdown</summary>
-            \`\`\`
+            \`\`\`sh
             ${infracost}
             \`\`\`
             </details>
