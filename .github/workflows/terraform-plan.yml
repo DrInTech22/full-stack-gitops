@@ -57,7 +57,7 @@ jobs:
 
       - name: Save Plan JSON
         id: save-plan
-        run: terraform show -json tfplan.out > /tmp/tfplan.txt
+        run: terraform show -no-color tfplan.out > /tmp/tfplan.txt
         working-directory: ./terraform
 
       - name: Setup Infracost
@@ -72,15 +72,15 @@ jobs:
           ref: '${{ github.event.pull_request.base.ref }}'
 
       - name: Run Infracost
-        shell: bash
         run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json && pwd
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json
 
       # Checkout the current PR branch so we can create a diff.
       - name: Checkout PR branch
         uses: actions/checkout@v4
       - name: Generate Infracost diff
         run: |
+          infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt
           infracost diff --path=./terraform \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
@@ -97,4 +97,5 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           file-path: /tmp/tfplan.txt
+          file-path: /tmp/infracost-new.txt
           pr-number: ${{ github.event.pull_request.number }}
