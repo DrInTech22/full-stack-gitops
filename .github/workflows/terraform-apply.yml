@@ -1,5 +1,5 @@
 name: Terraform Apply
-run-name: ${{ github.actor }} triggered the pipeline
+# run-name: ${{ github.actor }} triggered the pipeline
 
 on:
   workflow_dispatch:
@@ -62,7 +62,32 @@ jobs:
           if [ "${{ github.event.inputs.operation }}" = "destroy" ]; then
             terraform destroy --auto-approve
           else
+            terraform destroy --auto-approve
             terraform apply --auto-approve
           fi
         working-directory: ./terraform
+        - name: Upload Ansible Inventory
+          uses: actions/upload-artifact@v3
+          with:
+            name: ansible_inventory
+            path: ./inventory.ini
+          working-directory: ./terraform
+        - name: Save Public IP 
+          run: |
+            echo "public_ip=$(terraform output -raw instance_public_ip)" > public_ip_env.txt
+          working-directory: ./terraform
+        - name: Upload Public_IP
+          uses: actions/upload-artifact@v3
+          with:
+            name: Public_IP
+            path: |
+              ./public_ip_env.txt
+          working-directory: ./terraform
+        - name: Trigger Ansible Monitoring Workflow
+          uses: peter-evans/repository-dispatch@v2
+          with:
+            event-type: ansible-monitoring
+
+
+
  

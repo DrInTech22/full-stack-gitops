@@ -1,5 +1,5 @@
 name: Terraform Plan and Cost Estimation
-run-name: ${{ github.actor }} triggered the pipeline
+# run-name: ${{ github.actor }} triggered the pipeline
 
 on:
   workflow_dispatch:

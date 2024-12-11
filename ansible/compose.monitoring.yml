@@ -1,3 +1,5 @@
+name: gitops
+
 services:
   prometheus:
     image: prom/prometheus
@@ -95,6 +97,57 @@ services:
       - ./monitoring/promtail-config.yml:/etc/promtail/promtail-config.yaml
     depends_on:
       - loki
+      
+  traefik:
+    image: traefik:v2.10.1
+    restart: unless-stopped
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--api"
+      - "--certificatesresolvers.letsencryptresolver.acme.email={{ cert_email }}"
+      - "--certificatesresolvers.letsencryptresolver.acme.storage=/acme.json"
+      - "--certificatesresolvers.letsencryptresolver.acme.tlschallenge=true"
+      - "--accesslog=true"
+      - "--log.level=ERROR"
+    ports:
+      - 80:80
+      - 443:443
+    expose:
+      - "8080"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/acme.json:/acme.json
+    labels:
+      - "traefik.enable=true"
+      # HTTP Router
+      - "traefik.http.routers.traefik-http.rule=Host(`{{ traefik_domain }}`) || Host(`www.{{ traefik_domain }}`)"
+      - "traefik.http.routers.traefik-http.entrypoints=web"
+      - "traefik.http.services.traefik-http.loadbalancer.server.port=8080"
+      # www to non-www redirect
+      - "traefik.http.routers.traefik-https.middlewares=www-to-non-www"
+      # HTTP to HTTPS redirect
+      - "traefik.http.middlewares.www-to-non-www.redirectregex.regex=^https?://www\\.(.+)"
+      - "traefik.http.middlewares.www-to-non-www.redirectregex.replacement=https://$1"
+      - "traefik.http.middlewares.www-to-non-www.redirectregex.permanent=true"
+      # HTTPS Router
+      - "traefik.http.routers.traefik-https.rule=Host(`{{ traefik_domain }}`) || Host(`www.{{ traefik_domain }}`)"
+      - "traefik.http.routers.traefik-https.entrypoints=websecure"
+      - "traefik.http.routers.traefik-https.service=api@internal"
+      - "traefik.http.routers.traefik-https.tls.certresolver=letsencryptresolver"
+    networks:
+      - app-network
+      - monitor-network
 
+networks:
+  app-network:
+    external: true
+  monitor-network:
+    external: true
 volumes:
   grafana:
