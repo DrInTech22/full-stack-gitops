@@ -3,9 +3,9 @@ name: Ansible Monitoring
 on:
   workflow_dispatch:
   workflow_run:
-      workflows: ["Terraform Apply"]
-      types:
-        - completed
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
 
 jobs:
   monitoring-stack-deploy:
@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: infra_features
 
       - name: Get Workflow Run ID
         id: get-run-id

@@ -2,16 +2,16 @@ name: Terraform Apply
 # run-name: ${{ github.actor }} triggered the pipeline
 
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     operation:
-  #       description: 'Choose the Terraform operation'
-  #       required: true
-  #       default: 'apply'
-  #       type: choice
-  #       options:
-  #         - apply
-  #         - destroy
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: 'Choose the Terraform operation'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
   push:
     branches:
       - 'infra_main'
@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: infra_features
 
       - name: Write Private Key to File
         run: |
@@ -78,13 +80,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Public_IP
-          path: |
-            ./public_ip_env.txt
-      - name: Trigger Ansible Monitoring Workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TOKEN }}
-          event-type: ansible-monitoring
+          path: ./public_ip_env.txt
+      # - name: Trigger Ansible Monitoring Workflow
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     token: ${{ secrets.TOKEN }}
+      #     event-type: ansible-monitoring
 
 
 

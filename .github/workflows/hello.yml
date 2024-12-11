@@ -3,6 +3,9 @@ name: Simple Workflow
 on:
   workflow_dispatch:
   workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
   push:
     branches:
       - 'infra_features'
