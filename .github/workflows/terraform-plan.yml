@@ -93,15 +93,41 @@ jobs:
                                    --github-token=${{ github.token }} \
                                    --pull-request=${{ github.event.pull_request.number }} \
                                    --behavior=update
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
+      - name: Update PR Comment
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: ${{ steps.plan.outcome }}
         with:
-          file-path: /tmp/tfplan.txt
-          pr-number: ${{ github.event.pull_request.number }}
-          comment-tag: comment-output
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v3
-        with:
-          file-path: /tmp/infracost-new.txt
-          pr-number: ${{ github.event.pull_request.number }}
-          comment-tag: comment-output
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const plan = fs.readFileSync('/tmp/tfplan.txt', 'utf8');
+            const infracost = fs.readFileSync('/tmp/infracost-new.txt', 'utf8');
+            
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            
+            <details><summary>Show Plan</summary>
+            
+            \`\`\`hcl
+            ${plan}
+            \`\`\`
+            
+            </details>
+            
+            #### New Infracost Breakdown 💰
+            <details><summary>Show Breakdown</summary>
+            \`\`\`
+            ${infracost}
+            \`\`\`
+            </details>
+            
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
