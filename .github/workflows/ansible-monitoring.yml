@@ -13,10 +13,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Write Private Key to File
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          echo "${{ github.event.client_payload.run_id }}"
+          echo "${{ github.event.workflow_run.id }}"
+
       - name: Download Ansible Inventory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ansible_inventory
+          github-token: ${{ secrets.TOKEN }} 
+          run-id: ${{ github.event.client_payload.run_id }}
 
       - name: Verify Ansible Inventory
         run: |
