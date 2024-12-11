@@ -64,9 +64,6 @@ jobs:
         uses: infracost/actions/setup@v3
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
-      - name: Run Infracost
-        run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-new.json && pwd && cat /tmp/infracost-new.json
 
       # Checkout the branch you want Infracost to compare costs against, most commonly the target branch.
       - name: Checkout base branch
@@ -78,10 +75,16 @@ jobs:
         shell: bash
         run: |
           infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json && pwd
-          infracost diff --path=../tfplan.json \
-                              --format=json \
-                              --compare-to=/tmp/infracost-base.json \
-                              --out-file=/tmp/infracost.json 
+
+      # Checkout the current PR branch so we can create a diff.
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+      - name: Generate Infracost diff
+        run: |
+          infracost diff --path=./terraform \
+                          --format=json \
+                          --compare-to=/tmp/infracost-base.json \
+                          --out-file=/tmp/infracost.json
 
       - name: Post Infracost Comment
         run: |
