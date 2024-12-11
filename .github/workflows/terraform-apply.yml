@@ -2,16 +2,16 @@ name: Terraform Apply
 # run-name: ${{ github.actor }} triggered the pipeline
 
 on:
-  workflow_dispatch:
-    inputs:
-      operation:
-        description: 'Choose the Terraform operation'
-        required: true
-        default: 'apply'
-        type: choice
-        options:
-          - apply
-          - destroy
+  # workflow_dispatch:
+  #   inputs:
+  #     operation:
+  #       description: 'Choose the Terraform operation'
+  #       required: true
+  #       default: 'apply'
+  #       type: choice
+  #       options:
+  #         - apply
+  #         - destroy
   push:
     branches:
       - 'infra_main'
