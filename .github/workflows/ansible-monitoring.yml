@@ -1,9 +1,11 @@
 name: Ansible Monitoring
 
 on:
-  repository_dispatch:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Terraform Apply"]
     types:
-      - ansible-monitoring
+      - completed
 
 jobs:
   monitoring-stack-deploy:
@@ -11,11 +13,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: infra_features
+
+      - name: Get Workflow Run ID
+        id: get-run-id
+        run: |
+          RUN_ID=$(curl -s \
+            -H "Authorization: Bearer ${{ secrets.TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/terraform-apply.yml/runs?branch=infra_features&per_page=1" \
+            | jq -r '.workflow_runs[0].id')
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+          echo "$RUN_ID"
+
+      - name: Write Private Key to File
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          chmod 600 ${{ vars.TF_KEY_PAIR_NAME }}.pem
+          echo "${{ github.event.client_payload.run_id }}"
+          echo "${{ github.event.workflow_run.id }}"
 
       - name: Download Ansible Inventory
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ansible_inventory
+          github-token: ${{ secrets.TOKEN }} 
+          run-id: ${{ steps.get-run-id.outputs.run_id }}
 
       - name: Verify Ansible Inventory
         run: |

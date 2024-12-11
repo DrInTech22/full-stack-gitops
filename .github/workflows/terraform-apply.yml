@@ -41,6 +41,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: infra_features
 
       - name: Write Private Key to File
         run: |
@@ -62,12 +64,11 @@ jobs:
           if [ "${{ github.event.inputs.operation }}" = "destroy" ]; then
             terraform destroy --auto-approve
           else
-            terraform destroy --auto-approve
             terraform apply --auto-approve
           fi
         working-directory: ./terraform
       - name: Upload Ansible Inventory
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ansible_inventory
           path: ./terraform/inventory.ini
@@ -76,15 +77,15 @@ jobs:
           echo "public_ip=$(terraform output -raw instance_public_ip)" > public_ip_env.txt
         working-directory: ./terraform
       - name: Upload Public_IP
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Public_IP
-          path: |
-            ./public_ip_env.txt
-      - name: Trigger Ansible Monitoring Workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: ansible-monitoring
+          path: ./public_ip_env.txt
+      # - name: Trigger Ansible Monitoring Workflow
+      #   uses: peter-evans/repository-dispatch@v2
+      #   with:
+      #     token: ${{ secrets.TOKEN }}
+      #     event-type: ansible-monitoring
 
 
 

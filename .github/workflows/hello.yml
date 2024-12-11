@@ -1,0 +1,26 @@
+name: Simple Workflow
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Terraform Apply"]
+    types:
+      - completed
+  push:
+    branches:
+      - 'infra_features'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+
