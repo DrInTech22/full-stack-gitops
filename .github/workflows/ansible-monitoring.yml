@@ -1,10 +1,10 @@
 name: Ansible Monitoring
 
-on:
-  workflow_dispatch:
-  repository_dispatch:
-    types:
-      - ansible-monitoring
+# on:
+#   workflow_dispatch:
+#   repository_dispatch:
+#     types:
+#       - ansible-monitoring
 
 jobs:
   monitoring-stack-deploy:
