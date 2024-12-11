@@ -62,7 +62,6 @@ jobs:
           if [ "${{ github.event.inputs.operation }}" = "destroy" ]; then
             terraform destroy --auto-approve
           else
-            terraform destroy --auto-approve
             terraform apply --auto-approve
           fi
         working-directory: ./terraform
