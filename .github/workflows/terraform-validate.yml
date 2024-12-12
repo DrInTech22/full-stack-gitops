@@ -49,4 +49,7 @@ jobs:
         id: validate
         run: terraform validate
         working-directory: ./terraform
- 
+      - name: Invoke workflow without inputs
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Simple Workflow
