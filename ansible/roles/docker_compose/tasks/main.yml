@@ -1,5 +1,7 @@
 ---
 - name: Run main Docker Compose
-  shell: docker compose -f compose.monitoring.yml up -d
+  shell: |
+    sleep 180
+    docker compose -f compose.monitoring.yml up -d
   args:
     chdir: /home/ubuntu

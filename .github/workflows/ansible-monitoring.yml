@@ -2,12 +2,6 @@ name: Ansible Monitoring
 
 on:
   workflow_dispatch:
-    branches:
-      - infra_features
-  workflow_run:
-    workflows: ["Terraform Apply"]
-    types:
-      - completed
 
 jobs:
   monitoring-stack-deploy:

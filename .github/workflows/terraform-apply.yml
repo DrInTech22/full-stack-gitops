@@ -81,6 +81,7 @@ jobs:
         if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy' 
         run: |
           echo "public_ip=$(terraform output -raw instance_public_ip)" > public_ip_env.txt
+          cat public_ip_env.txt
         working-directory: ./terraform
 
       - name: Upload Public_IP
@@ -89,7 +90,7 @@ jobs:
         with:
           name: Public_IP
           path: ./public_ip_env.txt
-          
+
       - name: Invoke workflow without inputs
         if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy'
         uses: benc-uk/workflow-dispatch@v1
