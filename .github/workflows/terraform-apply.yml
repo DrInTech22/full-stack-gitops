@@ -69,21 +69,29 @@ jobs:
             terraform apply --auto-approve
           fi
         working-directory: ./terraform
+
       - name: Upload Ansible Inventory
+        if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy'
         uses: actions/upload-artifact@v4
         with:
           name: ansible_inventory
           path: ./terraform/inventory.ini
-      - name: Save Public IP 
+
+      - name: Save Public IP
+        if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy' 
         run: |
           echo "public_ip=$(terraform output -raw instance_public_ip)" > public_ip_env.txt
         working-directory: ./terraform
+
       - name: Upload Public_IP
+        if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy'
         uses: actions/upload-artifact@v4
         with:
           name: Public_IP
           path: ./public_ip_env.txt
+          
       - name: Invoke workflow without inputs
+        if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy'
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Ansible Monitoring
