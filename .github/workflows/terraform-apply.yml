@@ -83,11 +83,11 @@ jobs:
         with:
           name: Public_IP
           path: ./public_ip_env.txt
-      # - name: Trigger Ansible Monitoring Workflow
-      #   uses: peter-evans/repository-dispatch@v2
-      #   with:
-      #     token: ${{ secrets.TOKEN }}
-      #     event-type: ansible-monitoring
+      - name: Invoke workflow without inputs
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: Ansible Monitoring
+          token: "${{ secrets.TOKEN }}"
 
 
 
