@@ -73,13 +73,6 @@ services:
     networks:
       - monitor-network
       - app-network
-    depends_on:
-      - backend
-      - frontend
-      - adminer
-      - traefik
-      - db
-
   loki:
     image: grafana/loki:latest
     ports:
