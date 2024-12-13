@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Public_IP
-          path: ./public_ip_env.txt
+          path: ./terraform/public_ip_env.txt
 
       - name: Invoke workflow without inputs
         if: steps.terraform-operation.outcome == 'success' && github.event.inputs.operation != 'destroy'
