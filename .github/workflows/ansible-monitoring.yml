@@ -22,6 +22,9 @@ jobs:
             | jq -r '.workflow_runs[0].id')
           echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
           echo "$RUN_ID"
+          echo "${{ toJson(github.event) }}"
+          echo "Triggering Workflow Run ID: ${{ github.event.workflow_dispatch.workflow_id }}"
+          echo "Triggering Workflow Run Number: ${{ github.event.workflow_dispatch.run_number }}"
 
       - name: Write Private Key to File
         run: |
