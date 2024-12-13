@@ -1,9 +1,13 @@
----
+- name: Check if Loki Docker driver plugin is already installed
+  shell: docker plugin ls | grep -q "loki"
+  register: loki_plugin_exists
+  changed_when: false
+  failed_when: false
+
 - name: Install the Loki Docker driver plugin
-  shell: |
-    if ! docker plugin ls | grep -q "loki"; then
-      docker plugin install grafana/loki-docker-driver:2.9.1 --alias loki --grant-all-permissions
-    fi
+  shell: docker plugin install grafana/loki-docker-driver:2.9.1 --alias loki --grant-all-permissions
+  register: loki_plugin_installed
+  when: loki_plugin_exists.rc != 0
 
 - name: Create /etc/docker/daemon.json with Loki configuration
   copy:
@@ -17,6 +21,8 @@
         }
       }
     force: yes
+  when: loki_plugin_installed is changed
 
 - name: Restart Docker service
   shell: systemctl restart docker
+  when: loki_plugin_installed is changed
