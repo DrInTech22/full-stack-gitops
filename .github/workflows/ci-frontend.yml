@@ -5,11 +5,10 @@ on:
   push:
     branches:
       - 'integration'
-    path:
+    paths:
       - 'frontend/**'
       
 jobs:
-  # Frontend Pipeline
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
@@ -97,12 +96,13 @@ jobs:
 
       - name: Commit and Push Changes
         run: |
+          BRANCH_NAME=${{ github.ref }}
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./ansible/compose.yml.j2
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
-          git pull --rebase
-          git push
+          git pull --rebase origin $BRANCH_NAME
+          git push origin $BRANCH_NAME
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
