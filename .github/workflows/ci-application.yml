@@ -101,7 +101,7 @@ jobs:
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
   # Backend Pipeline
   backend-build-and-test:
@@ -221,6 +221,6 @@ jobs:
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
 
