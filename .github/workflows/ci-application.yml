@@ -51,7 +51,7 @@ jobs:
     env:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/frontend"
       IMAGE_TAG_1: "latest"
-      IMAGE_TAG_2: "${{ github.run_number }}-${{ github.sha[0:7] }}"
+      IMAGE_TAG_2: "${{ github.run_number }}-${{ substring(github.sha, 0, 7) }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -78,7 +78,7 @@ jobs:
     needs: frontend-build-push-image
     env:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/frontend"
-      IMAGE_TAG_2: "${{ github.run_number }}-${{ github.sha[0:7] }}"
+      IMAGE_TAG_2: "${{ github.run_number }}-${{ substring(github.sha, 0, 7) }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -164,7 +164,7 @@ jobs:
     env:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/backend"
       IMAGE_TAG_1: "latest"
-      IMAGE_TAG_2: "${{ github.run_number }}-${{ github.sha[0:7] }}"
+      IMAGE_TAG_2: "${{ github.run_number }}-${{ substring(github.sha, 0, 7) }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -192,7 +192,7 @@ jobs:
     needs: backend-build-push-image
     env:
       IMAGE_NAME: "${{ secrets.DOCKERHUB_USERNAME }}/backend"
-      IMAGE_TAG_2: "${{ github.run_number }}-${{ github.sha[0:7] }}"
+      IMAGE_TAG_2: "${{ github.run_number }}-${{ substring(github.sha, 0, 7) }}"
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
