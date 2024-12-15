@@ -2,7 +2,7 @@ include:
   - compose.monitoring.yml
 services:
   frontend:
-    image: maestrops/frontend:latest
+    image: maestrops/frontend:13-70ed256
     env_file:
       - frontend/.env
     depends_on:
