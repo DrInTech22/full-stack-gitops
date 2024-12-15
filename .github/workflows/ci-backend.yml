@@ -6,7 +6,7 @@ on:
     branches:
       - 'integration'
     path:
-      - './backend/**'
+      - 'backend/**'
       
 jobs:
   build-and-test:
@@ -124,6 +124,7 @@ jobs:
           git config --global user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./ansible/compose.yml.j2
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
+          git pull --rebase
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

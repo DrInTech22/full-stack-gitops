@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Frontend CI Pipeline
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     branches:
       - 'integration'
     path:
-      - './frontend/**'
+      - 'frontend/**'
       
 jobs:
   # Frontend Pipeline
@@ -101,6 +101,7 @@ jobs:
           git config --global user.name "${{ secrets.GIT_USER_NAME }}"
           git add ./ansible/compose.yml.j2
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
+          git pull --rebase
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
