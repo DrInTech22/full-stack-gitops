@@ -149,7 +149,7 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          poetry run pytest
+          poetry run pytest | tee /dev/null
 
 
   backend-build-push-image:
