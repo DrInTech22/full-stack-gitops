@@ -14,15 +14,59 @@ jobs:
     # environment:
     #   name: backend
     #   url: ${{ vars.URL }}
+    env:
+      # Backend Sensitive Variables 
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
+      FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
+      # SMTP_HOST: ${{ secrets.SMTP_HOST }}
+      # SMTP_USER: ${{ secrets.SMTP_USER }}
+      # SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      
+      # PostgreSQL Sensitive Variables
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      # Frontend Sensitive Variables
+      VITE_API_URL: ${{ secrets.FRONTEND_ENV }}
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Prepare Frontend Env
-        env:
-          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+      - name: Set backend env file
         run: |
-          echo "$FRONTEND_ENV" > frontend.env
+          # Backend Insensitive Variables 
+          echo "DOMAIN=production" >> backend.env
+          echo "ENVIRONMENT=prod" >> backend.env
+          echo "PROJECT_NAME=\"Full Stack FastAPI Project\"" >> backend.env
+          echo "STACK_NAME=full-stack-fastapi-project" >> backend.env
+          echo "BACKEND_CORS_ORIGINS=\"http://localhost,http://localhost:5173,https://localhost,https://localhost:5173\"" >> backend.env
+          echo "SMTP_TLS=true" >> backend.env
+          echo "SMTP_SSL=false" >> backend.env
+          echo "SMTP_PORT=587" >> backend.env
+          echo "EMAILS_FROM_EMAIL=info@example.com" >> backend.env
+          echo "POSTGRES_SERVER=db" >> backend.env
+          echo "POSTGRES_USER=app" >> backend.env
+          echo "POSTGRES_PORT=5432" >> backend.env
+          echo "POSTGRES_DB=app" >> backend.env
+          echo "USERS_OPEN_REGISTRATION=True" >> backend.env
+
+          # Sensitive Variables
+          echo "SECRET_KEY=${SECRET_KEY}" >> backend.env
+          echo "FIRST_SUPERUSER=${FIRST_SUPERUSER}" >> backend.env
+          echo "FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}" >> backend.env
+          # echo "SMTP_HOST=${SMTP_HOST}" >> backend.env
+          # echo "SMTP_USER=${SMTP_USER}" >> backend.env
+          # echo "SMTP_PASSWORD=${SMTP_PASSWORD}" >> backend.env
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> backend.env
+
+      - name: Prepare Frontend and PostgreSQL Env
+        run: |
+          # Frontend env file
+          echo "VITE_API_URL=${VITE_API_URL}" > frontend.env
+          # PostgreSQL env file
+          echo "POSTGRES_USER=app" >> postgres.env
+          echo "POSTGRES_DB=app" >> postgres.env
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> postgres.env
 
 
       - name: Get terraform-apply.yml Run ID
@@ -49,26 +93,13 @@ jobs:
           PUBLIC_IP=$(grep -oP '\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b' public_ip_env.txt | head -n 1)
           echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
-      - name: Decrypt Backend Env File
-        env:
-          PASSPHRASE: ${{ secrets.ENCRYPTION_PASSPHRASE }}
-          ENCRYPTED_BACKEND_ENV: ${{ secrets.BACKEND_ENV_FILE }}
-        run: |
-          echo "$ENCRYPTED_BACKEND_ENV" | base64 -d | openssl enc -aes-256-cbc -d -pbkdf2 -k "$PASSPHRASE" -out backend.env
-
-      - name: Prepare PostgreSQL Password
-        env:
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        run: |
-          echo "$POSTGRES_PASSWORD" > POSTGRES_PASSWORD.txt
-
       - name: Copy files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "backend.env, frontend.env, POSTGRES_PASSWORD.txt, compose.yml"
+          source: "backend.env, frontend.env, postgres.env, compose.yml"
           target: "~/"
           overwrite: true
 
@@ -81,5 +112,7 @@ jobs:
           script: |
             mv backend.env backend/.env
             mv frontend.env frontend/.env
+            mv postgres.env .env
             docker compose down backend db adminer
             docker compose up -d --no-deps --force-recreate backend db adminer
+            rm frontend/.env backend/.env .env
