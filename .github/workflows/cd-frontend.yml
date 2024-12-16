@@ -15,6 +15,8 @@ jobs:
     env:
       # Frontend Sensitive Variables
       VITE_API_URL: ${{ secrets.FRONTEND_ENV }}
+      # PostgreSQL Sensitive Variables
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -23,6 +25,10 @@ jobs:
         run: |
           # Frontend env file
           echo "VITE_API_URL=${VITE_API_URL}" > frontend.env
+          # PostgreSQL env file
+          echo "POSTGRES_USER=app" >> postgres.env
+          echo "POSTGRES_DB=app" >> postgres.env
+          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> postgres.env
 
       - name: Get terraform-apply.yml Run ID
         id: get-run-id
@@ -54,7 +60,7 @@ jobs:
           host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "frontend.env, compose.yml"
+          source: "frontend.env, postgres.env, compose.yml"
           target: "~/"
           overwrite: true
 
@@ -66,6 +72,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             mv frontend.env frontend/.env
+            mv postgres.env .env
             docker compose down frontend
             docker compose up -d --no-deps --force-recreate frontend
-            rm frontend/.env
+            rm frontend/.env .env
