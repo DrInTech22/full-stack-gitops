@@ -51,9 +51,9 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: app
-      POSTGRES_USER: app
-      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - app-network
     secrets:
@@ -89,6 +89,3 @@ networks:
     external: true
 volumes:
   postgres_data:
-secrets:
-  postgres_password:
-    file: ./POSTGRES_PASSWORD.txt

@@ -15,15 +15,17 @@ jobs:
     # environment:
     #   name: Frontend
     #   url: ${{ vars.URL }}
+    env:
+      # Frontend Sensitive Variables
+      VITE_API_URL: ${{ secrets.FRONTEND_ENV }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Prepare Frontend Environment
-        env:
-          FRONTEND_ENV: ${{ secrets.FRONTEND_ENV }}
+      - name: Prepare Frontend and PostgreSQL Env
         run: |
-          echo "$FRONTEND_ENV" > frontend.env
+          # Frontend env file
+          echo "VITE_API_URL=${VITE_API_URL}" > frontend.env
 
       - name: Get terraform-apply.yml Run ID
         id: get-run-id
@@ -69,3 +71,4 @@ jobs:
             mv frontend.env frontend/.env
             docker compose down frontend
             docker compose up -d --no-deps --force-recreate frontend
+            rm frontend/.env
