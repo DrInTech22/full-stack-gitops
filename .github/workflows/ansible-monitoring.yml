@@ -10,7 +10,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          ref: infra_features
 
       - name: Get Workflow Run ID
         id: get-run-id
