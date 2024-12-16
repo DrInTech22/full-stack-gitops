@@ -8,6 +8,10 @@ resource "aws_instance" "ec2" {
     Name = var.ec2_name
   }
 
+  root_block_device {
+    volume_size = var.volume_size
+  }
+
   provisioner "local-exec" {
     command = "echo 'Instance provisioned: ${self.public_ip}'"
   }

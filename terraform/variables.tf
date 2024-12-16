@@ -38,6 +38,12 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
+variable "volume_size" {
+  description = "The size of the EBS volume in GB."
+  type        = number
+  default     = 15  # Default to 30 GB
+}
+
 variable "key_pair_name" {
   description = "Key pair name for SSH access"
   type        = string

@@ -18,6 +18,7 @@ env:
   TF_VAR_aws_region: ${{ vars.TF_AWS_REGION }}
   TF_VAR_ami_id: ${{ vars.TF_AMI_ID }}
   TF_VAR_instance_type: ${{ vars.TF_INSTANCE_TYPE }}
+  TF_VAR_volume_size: ${{ vars.TF_VOLUME_SIZE }}
   TF_VAR_key_pair_name: ${{ vars.TF_KEY_PAIR_NAME }}
   TF_VAR_private_key: ${{ secrets.PRIVATE_KEY }}
   TF_VAR_domain_name: ${{ vars.TF_DOMAIN_NAME }}
@@ -55,7 +56,8 @@ jobs:
         run: | 
           terraform plan -out=tfplan.out \
           -var="ami_id=ami-005fc0f236362e99f" \
-          -var="instance_type=t2.large"
+          -var="instance_type=t2.large" \
+          -var="volume_size=16"
         working-directory: ./terraform
 
       - name: Save Plan JSON
@@ -85,13 +87,15 @@ jobs:
         run: |
           infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt \
                               --terraform-var "ami_id=ami-005fc0f236362e99f" \
-                              --terraform-var "instance_type=t2.large"          
+                              --terraform-var "instance_type=t2.large" \
+                              --terraform-var "volume_size=16"         
           infracost diff  --path=./terraform \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json \
                           --terraform-var "ami_id=ami-005fc0f236362e99f" \
-                          --terraform-var "instance_type=t2.large"
+                          --terraform-var "instance_type=t2.large" \
+                          --terraform-var "volume_size=16"
 
       - name: Post Infracost Comment
         run: |

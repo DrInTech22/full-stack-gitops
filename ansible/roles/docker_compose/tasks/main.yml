@@ -1,7 +1,7 @@
 ---
 - name: Run main Docker Compose
   shell: |
-    sleep 180
-    docker compose -f compose.monitoring.yml up -d
+    sleep 80
+    docker compose -f compose.monitoring.yml up -d --force-recreate
   args:
     chdir: /home/ubuntu

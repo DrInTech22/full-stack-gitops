@@ -35,6 +35,19 @@
     state: started
     enabled: true
 
+- name: Add user to the Docker group
+  command: usermod -aG docker ubuntu
+  become: yes  # Required to ensure the command runs with elevated privileges
+
+- name: Apply Docker group changes for the current session
+  shell: |
+    newgrp docker << END
+    exit
+    END
+  args:
+    executable: /bin/bash
+  become: yes
+
 - name: Create app-network 
   community.docker.docker_network:
     name: app-network

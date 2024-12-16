@@ -26,6 +26,7 @@ env:
   TF_VAR_aws_region: ${{ vars.TF_AWS_REGION }}
   TF_VAR_ami_id: ${{ vars.TF_AMI_ID }}
   TF_VAR_instance_type: ${{ vars.TF_INSTANCE_TYPE }}
+  TF_VAR_volume_size: ${{ vars.TF_VOLUME_SIZE }}
   TF_VAR_key_pair_name: ${{ vars.TF_KEY_PAIR_NAME }}
   TF_VAR_private_key: ${{ secrets.PRIVATE_KEY }}
   TF_VAR_domain_name: ${{ vars.TF_DOMAIN_NAME }}
