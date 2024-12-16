@@ -11,15 +11,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment:
-    #   name: backend
-    #   url: ${{ vars.URL }}
     env:
       # Backend Sensitive Variables 
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
       FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
-
       # PostgreSQL Sensitive Variables
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       # Frontend Sensitive Variables
@@ -51,9 +47,6 @@ jobs:
           echo "SECRET_KEY=${SECRET_KEY}" >> backend.env
           echo "FIRST_SUPERUSER=${FIRST_SUPERUSER}" >> backend.env
           echo "FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}" >> backend.env
-          # echo "SMTP_HOST=${SMTP_HOST}" >> backend.env
-          # echo "SMTP_USER=${SMTP_USER}" >> backend.env
-          # echo "SMTP_PASSWORD=${SMTP_PASSWORD}" >> backend.env
           echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> backend.env
 
       - name: Prepare Frontend and PostgreSQL Env
@@ -112,4 +105,4 @@ jobs:
             mv postgres.env .env
             docker compose down backend db adminer
             docker compose up -d --no-deps --force-recreate backend db adminer
-            # rm frontend/.env backend/.env .env
+            rm frontend/.env backend/.env .env

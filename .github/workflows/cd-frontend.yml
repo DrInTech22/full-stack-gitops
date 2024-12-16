@@ -12,9 +12,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # environment:
-    #   name: Frontend
-    #   url: ${{ vars.URL }}
     env:
       # Frontend Sensitive Variables
       VITE_API_URL: ${{ secrets.FRONTEND_ENV }}
