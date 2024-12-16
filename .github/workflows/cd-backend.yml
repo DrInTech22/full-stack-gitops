@@ -39,8 +39,8 @@ jobs:
       - name: Read public IP
         id: read_ip
         run: |
-          PUBLIC_IP=$(cat public_ip_env.txt | tr -d '[:space:]')
-          echo "PUBLIC_IP_ENV=$PUBLIC_IP" >> $GITHUB_ENV
+          PUBLIC_IP=$(terraform output -raw instance_public_ip | tr -d '\n' | tr -d '\r')
+          echo "PUBLIC_IP=$PUBLIC_IP" >> $GITHUB_ENV
 
       - name: Decrypt Backend Env File
         env:
@@ -58,7 +58,7 @@ jobs:
       - name: Copy files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ env.PUBLIC_IP_ENV }}
+          host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           source: "backend.env, POSTGRES_PASSWORD.txt, compose.yml"
@@ -67,7 +67,7 @@ jobs:
       - name: Use SSH Action
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ env.PUBLIC_IP_ENV }}
+          host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
