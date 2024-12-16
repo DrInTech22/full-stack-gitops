@@ -2,7 +2,7 @@ include:
   - compose.monitoring.yml
 services:
   frontend:
-    image: maestrops/frontend:latest
+    image: maestrops/frontend:2-49cf7ed
     env_file:
       - frontend/.env
     depends_on:
@@ -27,7 +27,7 @@ services:
       - app-network
 
   backend:
-    image: maestrops/backend:latest
+    image: maestrops/backend:2-49cf7ed
     env_file:
       - backend/.env
     networks:
