@@ -72,7 +72,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             mv frontend.env frontend/.env
-            mv postgres.env .env
+            mv postgres.env .env  && touch backend/.env
             docker compose down frontend
             docker compose up -d --no-deps --force-recreate frontend
-            rm frontend/.env .env
+            rm frontend/.env backend/.env .env
