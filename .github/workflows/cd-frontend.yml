@@ -4,7 +4,7 @@ run-name: ${{ github.actor }} triggered frontend pipeline
 on:
   push:
     branches:
-      - main
+      - deployment
     paths:
       - 'frontend/**'
   workflow_dispatch:
@@ -31,8 +31,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: 
-            - "frontend.env"
+          source: "frontend.env, compose.yml"
           target: "~/"
 
       - name: Use SSH Action
