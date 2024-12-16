@@ -83,5 +83,5 @@ networks:
 volumes:
   postgres_data:
 secrets:
-   postgres_password:
-     file: ./POSTGRES_PASSWORD.txt
+  postgres_password:
+    file: ./POSTGRES_PASSWORD.txt
