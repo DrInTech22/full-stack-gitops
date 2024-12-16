@@ -17,7 +17,7 @@ jobs:
     #   url: ${{ vars.URL }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Prepare Frontend Environment
         env:
