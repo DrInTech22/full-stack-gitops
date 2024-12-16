@@ -81,4 +81,5 @@ jobs:
           script: |
             mv backend.env backend/.env
             mv frontend.env frontend/.env
+            docker compose down backend db adminer
             docker compose up -d --no-deps --force-recreate backend db adminer
