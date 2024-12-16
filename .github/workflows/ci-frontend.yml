@@ -92,14 +92,14 @@ jobs:
 
       - name: Update Deployment YAML
         run: |
-          sed -i "s|image: ${{ env.IMAGE_NAME }}:.*|image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_2 }}|" ./ansible/compose.yml.j2
+          sed -i "s|image: ${{ env.IMAGE_NAME }}:.*|image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_2 }}|" compose.yml
 
       - name: Commit and Push Changes
         run: |
-          BRANCH_NAME=${{ github.ref }}
+          BRANCH_NAME=${{ github.ref_name }}
           git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
           git config --global user.name "${{ secrets.GIT_USER_NAME }}"
-          git add ./ansible/compose.yml.j2
+          git add compose.yml
           git commit -m "Update Docker Image Tag to ${{ env.IMAGE_TAG_2 }}"
           git pull --rebase origin $BRANCH_NAME
           git push origin $BRANCH_NAME

@@ -1,0 +1,84 @@
+name: gitops
+
+services:
+  frontend:
+    image: maestrops/frontend:latest
+    env_file:
+      - frontend/.env
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    labels:
+      - "traefik.enable=true"
+      # HTTP Router
+      - "traefik.http.routers.frontend-http.rule=(Host(`test.drintech.online`)  || Host(`www.test.drintech.online`))"
+      - "traefik.http.routers.frontend-http.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=5173"
+      # www to non-www redirect
+      - "traefik.http.routers.frontend-https.middlewares=www-to-non-www"
+      # HTTPS Router
+      - "traefik.http.routers.frontend-https.rule=(Host(`test.drintech.online`) || Host(`www.test.drintech.online`))"
+      - "traefik.http.routers.frontend-https.entrypoints=websecure"
+      - "traefik.http.routers.frontend-https.tls.certresolver=letsencryptresolver"
+      - "traefik.http.routers.frontend-https.service=frontend" # optional
+
+    networks:
+      - app-network
+
+  backend:
+    image: maestrops/backend:latest
+    env_file:
+      - backend/.env
+    networks:
+      - app-network
+    labels:
+      - traefik.enable=true
+      # HTTP Router
+      - traefik.http.routers.backend-http.rule=((Host(`test.drintech.online`)  || Host(`www.test.drintech.online`)) && (PathPrefix(`/api`) || PathPrefix(`/redoc`) || PathPrefix(`/docs`)))
+      - traefik.http.routers.backend-http.entrypoints=web
+      - traefik.http.services.backend-http.loadbalancer.server.port=8000
+      # www to non-www redirect
+      - "traefik.http.routers.backend-https.middlewares=www-to-non-www"
+      # HTTPS Router
+      - traefik.http.routers.backend-https.rule=(Host(`test.drintech.online`) && (PathPrefix(`/api`) || PathPrefix(`/redoc`) || PathPrefix(`/docs`)))
+      - traefik.http.routers.backend-https.entrypoints=websecure
+      - traefik.http.routers.backend-https.tls.certresolver=letsencryptresolver
+      
+    depends_on:
+      - db
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: changethis123
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    labels:
+      - traefik.enable=true
+      # HTTP Router
+      - traefik.http.routers.adminer-http.rule=Host(`db.test.drintech.online`) || Host(`www.db.test.drintech.online`)
+      - traefik.http.routers.adminer-http.entrypoints=web
+      - traefik.http.services.adminer.loadbalancer.server.port=8080
+      # www to non-www redirect
+      - "traefik.http.routers.adminer-https.middlewares=www-to-non-www"
+      # HTTPS Router
+      - traefik.http.routers.adminer-https.rule=Host(`db.test.drintech.online`) || Host(`www.db.test.drintech.online`)
+      - traefik.http.routers.adminer-https.entrypoints=websecure
+      - traefik.http.routers.adminer-https.tls.certresolver=letsencryptresolver
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
+volumes:
+  postgres_data:
