@@ -9,6 +9,7 @@ frontend_domain = "cv1.drintech.online"
 db_domain       = "db.cv1.drintech.online"
 traefik_domain  = "traefik.cv1.drintech.online"
 cert_email      = "admin@example.com" # replace with a valid email
+volume_size     = 15
 
 Let's move on
 just a test
