@@ -33,6 +33,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: 
             - "frontend.env"
+            - "compose.yml"
           target: "~/"
 
       - name: Use SSH Action

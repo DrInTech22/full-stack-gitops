@@ -64,6 +64,7 @@ jobs:
           source: 
             - "backend.env"
             - "POSTGRES_PASSWORD.txt"
+            - "compose.yml"
           target: "~/"
 
       - name: Use SSH Action
