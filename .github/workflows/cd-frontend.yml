@@ -33,6 +33,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "frontend.env, compose.yml"
           target: "~/"
+          overwrite: true
 
       - name: Use SSH Action
         uses: appleboy/ssh-action@v1.2.0
