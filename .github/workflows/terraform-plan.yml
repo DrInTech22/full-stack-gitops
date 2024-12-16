@@ -15,7 +15,7 @@ permissions:
 env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  # TF_VAR_aws_region: ${{ vars.TF_AWS_REGION }}
+  TF_VAR_aws_region: ${{ vars.TF_AWS_REGION }}
   # TF_VAR_ami_id: ${{ vars.TF_AMI_ID }}
   # TF_VAR_instance_type: ${{ vars.TF_INSTANCE_TYPE }}
   TF_VAR_key_pair_name: ${{ vars.TF_KEY_PAIR_NAME }}
@@ -54,7 +54,6 @@ jobs:
         id: plan
         run: | 
           terraform plan -out=tfplan.out \
-          -var="aws_region=${{ vars.TF_AWS_REGION }}" \
           -var="ami_id=ami-005fc0f236362e99f" \
           -var="instance_type=t3.medium"
         working-directory: ./terraform
@@ -77,7 +76,9 @@ jobs:
 
       - name: Run Infracost
         run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json \
+                              --terraform-var "ami_id=ami-005fc0f236362e99f" \
+                              --terraform-var "instance_type=t3.medium"
 
       # Checkout the current PR branch so we can create a diff.
       - name: Checkout PR branch
@@ -85,10 +86,12 @@ jobs:
       - name: Generate Infracost diff
         run: |
           infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt
-          infracost diff --path=./terraform \
+          infracost diff  --path=./terraform \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
-                          --out-file=/tmp/infracost.json
+                          --out-file=/tmp/infracost.json \
+                          --terraform-var "ami_id=ami-005fc0f236362e99f" \
+                          --terraform-var "instance_type=t3.medium"
 
       - name: Post Infracost Comment
         run: |
