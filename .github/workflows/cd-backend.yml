@@ -61,8 +61,7 @@ jobs:
           host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: 
-            - "backend.env, POSTGRES_PASSWORD.txt, compose.yml"
+          source: "backend.env, POSTGRES_PASSWORD.txt, compose.yml"
           target: "~/"
 
       - name: Use SSH Action
