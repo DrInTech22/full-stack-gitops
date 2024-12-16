@@ -33,16 +33,13 @@ jobs:
         run: |
           # Backend Insensitive Variables 
           echo "DOMAIN=production" >> backend.env
-          echo "ENVIRONMENT=prod" >> backend.env
+          echo "ENVIRONMENT=production" >> backend.env
           echo "PROJECT_NAME=\"Full Stack FastAPI Project\"" >> backend.env
           echo "STACK_NAME=full-stack-fastapi-project" >> backend.env
           echo "BACKEND_CORS_ORIGINS=\"http://localhost,http://localhost:5173,https://localhost,https://localhost:5173\"" >> backend.env
           echo "SMTP_TLS=true" >> backend.env
           echo "SMTP_SSL=false" >> backend.env
           echo "SMTP_PORT=587" >> backend.env
-          echo "SMTP_HOST=" >> backend.env
-          echo "SMTP_USER=" >> backend.env
-          echo "SMTP_PASSWORD=" >> backend.env
           echo "EMAILS_FROM_EMAIL=info@example.com" >> backend.env
           echo "POSTGRES_SERVER=db" >> backend.env
           echo "POSTGRES_USER=app" >> backend.env
@@ -58,7 +55,6 @@ jobs:
           # echo "SMTP_USER=${SMTP_USER}" >> backend.env
           # echo "SMTP_PASSWORD=${SMTP_PASSWORD}" >> backend.env
           echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> backend.env
-          cat backend.env
 
       - name: Prepare Frontend and PostgreSQL Env
         run: |
