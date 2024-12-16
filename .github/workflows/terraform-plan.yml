@@ -16,8 +16,8 @@ env:
   AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   TF_VAR_aws_region: ${{ vars.TF_AWS_REGION }}
-  # TF_VAR_ami_id: ${{ vars.TF_AMI_ID }}
-  # TF_VAR_instance_type: ${{ vars.TF_INSTANCE_TYPE }}
+  TF_VAR_ami_id: ${{ vars.TF_AMI_ID }}
+  TF_VAR_instance_type: ${{ vars.TF_INSTANCE_TYPE }}
   TF_VAR_key_pair_name: ${{ vars.TF_KEY_PAIR_NAME }}
   TF_VAR_private_key: ${{ secrets.PRIVATE_KEY }}
   TF_VAR_domain_name: ${{ vars.TF_DOMAIN_NAME }}
@@ -55,7 +55,7 @@ jobs:
         run: | 
           terraform plan -out=tfplan.out \
           -var="ami_id=ami-005fc0f236362e99f" \
-          -var="instance_type=t3.medium"
+          -var="instance_type=t2.large"
         working-directory: ./terraform
 
       - name: Save Plan JSON
@@ -76,22 +76,22 @@ jobs:
 
       - name: Run Infracost
         run: |
-          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json \
-                              --terraform-var "ami_id=ami-005fc0f236362e99f" \
-                              --terraform-var "instance_type=t3.medium"
+          infracost breakdown --path=./terraform --format=json --out-file=/tmp/infracost-base.json 
 
       # Checkout the current PR branch so we can create a diff.
       - name: Checkout PR branch
         uses: actions/checkout@v4
       - name: Generate Infracost diff
         run: |
-          infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt
+          infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt \
+                              --terraform-var "ami_id=ami-005fc0f236362e99f" \
+                              --terraform-var "instance_type=t2.large"          
           infracost diff  --path=./terraform \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json \
                           --terraform-var "ami_id=ami-005fc0f236362e99f" \
-                          --terraform-var "instance_type=t3.medium"
+                          --terraform-var "instance_type=t2.large"
 
       - name: Post Infracost Comment
         run: |
