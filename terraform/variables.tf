@@ -44,6 +44,12 @@ variable "volume_size" {
   default     = 15  # Default to 30 GB
 }
 
+variable "availability_zone" {
+  description = "The availability zone where the EC2 instance will be deployed."
+  type        = string
+  default     = "us-east-1a"  # Default value, can be overridden
+}
+
 variable "key_pair_name" {
   description = "Key pair name for SSH access"
   type        = string

@@ -57,7 +57,7 @@ jobs:
           terraform plan -out=tfplan.out \
           -var="ami_id=ami-005fc0f236362e99f" \
           -var="instance_type=t2.large" \
-          -var="volume_size=16"
+          -var="volume_size=20"
         working-directory: ./terraform
 
       - name: Save Plan JSON
@@ -88,14 +88,14 @@ jobs:
           infracost breakdown --path=./terraform --format=table --out-file=/tmp/infracost-new.txt \
                               --terraform-var "ami_id=ami-005fc0f236362e99f" \
                               --terraform-var "instance_type=t2.large" \
-                              --terraform-var "volume_size=16"         
+                              --terraform-var "volume_size=20"         
           infracost diff  --path=./terraform \
                           --format=json \
                           --compare-to=/tmp/infracost-base.json \
                           --out-file=/tmp/infracost.json \
                           --terraform-var "ami_id=ami-005fc0f236362e99f" \
                           --terraform-var "instance_type=t2.large" \
-                          --terraform-var "volume_size=16"
+                          --terraform-var "volume_size=20"
 
       - name: Post Infracost Comment
         run: |
