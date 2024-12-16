@@ -27,4 +27,4 @@ This directory contains the frontend of the application built with ReactJS and C
 4. **Configure API URL**:
    Ensure the API URL is correctly set in the `.env` file.
 
-## Just a quick test
+## Just a quick test.
