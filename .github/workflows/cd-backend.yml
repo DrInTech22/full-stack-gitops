@@ -3,7 +3,7 @@ name: Backend CD Pipeline
 on:
   push:
     branches:
-      - main
+      - deployment
     paths:
       - 'backend/**'
   workflow_dispatch:

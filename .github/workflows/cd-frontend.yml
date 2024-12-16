@@ -4,7 +4,7 @@ run-name: ${{ github.actor }} triggered frontend pipeline
 on:
   push:
     branches:
-      - main
+      - deployment
     paths:
       - 'frontend/**'
   workflow_dispatch:
