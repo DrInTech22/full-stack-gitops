@@ -18,7 +18,7 @@ jobs:
       - name: Prepare Frontend Env
         run: |
           # Frontend env file
-          echo "VITE_API_URL=test.drintech.online" > frontend.env
+          echo "VITE_API_URL=https://test.drintech.online" > frontend.env
 
       - name: Get terraform-apply.yml Run ID
         id: get-run-id
