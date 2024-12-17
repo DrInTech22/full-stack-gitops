@@ -6,8 +6,9 @@ on:
       - deployment
     paths:
       - 'backend/**'
+      - '!backend/*.md'
   workflow_dispatch:
-
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest

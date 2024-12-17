@@ -6,6 +6,7 @@ on:
       - deployment
     paths:
       - 'frontend/**'
+      - '!frontend/*.md'
   workflow_dispatch:
 
 jobs:
