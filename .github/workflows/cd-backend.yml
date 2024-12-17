@@ -11,17 +11,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      # Backend Sensitive Variables 
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
-      FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
-
-      # PostgreSQL Sensitive Variables
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      # Frontend Sensitive Variables
-      VITE_API_URL: ${{ secrets.FRONTEND_ENV }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -45,22 +34,21 @@ jobs:
           echo "USERS_OPEN_REGISTRATION=True" >> backend.env
 
           # Sensitive Variables
-          echo "SECRET_KEY=${SECRET_KEY}" >> backend.env
-          echo "FIRST_SUPERUSER=${FIRST_SUPERUSER}" >> backend.env
-          echo "FIRST_SUPERUSER_PASSWORD=${FIRST_SUPERUSER_PASSWORD}" >> backend.env
-          echo "SMTP_HOST=" >> backend.env
-          echo "SMTP_USER=" >> backend.env
-          echo "SMTP_PASSWORD=" >> backend.env
-          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> backend.env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> backend.env
+          echo "FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}" >> backend.env
+          echo "FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}" >> backend.env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend.env
+          # echo "SMTP_HOST=" >> backend.env
+          # echo "SMTP_USER=" >> backend.env
+          # echo "SMTP_PASSWORD=" >> backend.env
+
 
       - name: Prepare Frontend and PostgreSQL Env
         run: |
-          # Frontend env file
-          echo "VITE_API_URL=${VITE_API_URL}" > frontend.env
           # PostgreSQL env file
           echo "POSTGRES_USER=app" >> postgres.env
           echo "POSTGRES_DB=app" >> postgres.env
-          echo "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" >> postgres.env
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> postgres.env
 
 
       - name: Get terraform-apply.yml Run ID
@@ -93,7 +81,7 @@ jobs:
           host: ${{ env.PUBLIC_IP }}
           username: ${{ vars.EC2_USER }}
           key: ${{ secrets.PRIVATE_KEY }}
-          source: "backend.env, frontend.env, postgres.env, compose.yml"
+          source: "backend.env, postgres.env, compose.yml"
           target: "~/"
           overwrite: true
 
@@ -105,8 +93,7 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           script: |
             mv backend.env backend/.env
-            mv frontend.env frontend/.env
-            mv postgres.env .env
+            mv postgres.env .env && touch frontend/.env
             docker compose down backend db adminer
             docker compose up -d --no-deps --force-recreate backend db adminer
             # rm frontend/.env backend/.env .env
