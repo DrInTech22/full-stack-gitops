@@ -63,6 +63,6 @@ jobs:
           script: |
             mv frontend.env frontend/.env
             touch backend/.env 
-            docker compose down frontend
+            # docker compose down frontend
             docker compose up -d --no-deps --force-recreate frontend
-            # rm frontend/.env backend/.env
+            frontend/.env backend/.env

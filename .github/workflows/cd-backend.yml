@@ -17,7 +17,7 @@ jobs:
 
       - name: Set backend env file
         run: |
-          # Backend Insensitive Variables 
+          # Insensitive Variables 
           echo "DOMAIN=localhost" >> backend.env
           echo "ENVIRONMENT=local" >> backend.env
           echo "PROJECT_NAME=\"Full Stack FastAPI Project\"" >> backend.env
@@ -38,10 +38,6 @@ jobs:
           echo "FIRST_SUPERUSER=${{ secrets.FIRST_SUPERUSER }}" >> backend.env
           echo "FIRST_SUPERUSER_PASSWORD=${{ secrets.FIRST_SUPERUSER_PASSWORD }}" >> backend.env
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> backend.env
-          # echo "SMTP_HOST=" >> backend.env
-          # echo "SMTP_USER=" >> backend.env
-          # echo "SMTP_PASSWORD=" >> backend.env
-
 
       - name: Prepare Frontend and PostgreSQL Env
         run: |
@@ -94,6 +90,6 @@ jobs:
           script: |
             mv backend.env backend/.env
             mv postgres.env .env && touch frontend/.env
-            docker compose down backend db adminer
+            # docker compose down backend db adminer
             docker compose up -d --no-deps --force-recreate backend db adminer
-            # rm frontend/.env backend/.env .env
+            rm frontend/.env backend/.env .env
