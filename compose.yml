@@ -2,7 +2,7 @@ name: gitops
 
 services:
   frontend:
-    image: maestrops/frontend:5-da94df6
+    image: maestrops/frontend:8-57e5aae
     env_file:
       - frontend/.env
     depends_on:

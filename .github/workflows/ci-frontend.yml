@@ -50,9 +50,6 @@ jobs:
     name: Build & Push Image
     runs-on: ubuntu-latest
     needs: build-and-test
-    env:
-      GIT_USER_NAME: DrInTech
-      GIT_USER_EMAIL: ${{ secrets.TF_CERT_EMAIL }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -84,6 +81,9 @@ jobs:
     name: Update Deployment File
     runs-on: ubuntu-latest
     needs: build-push-image
+    env:
+      GIT_USER_NAME: DrInTech
+      GIT_USER_EMAIL: ${{ secrets.TF_CERT_EMAIL }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
