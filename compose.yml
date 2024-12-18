@@ -27,7 +27,7 @@ services:
       - app-network
 
   backend:
-    image: maestrops/backend:7-abdde4b
+    image: maestrops/backend:8-cbbea3f
     env_file:
       - backend/.env
     networks:
