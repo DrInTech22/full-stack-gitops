@@ -1,6 +1,7 @@
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
+#Yet, another test
 # Just a test
 # Shared properties
 class UserBase(SQLModel):
