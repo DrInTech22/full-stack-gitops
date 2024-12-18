@@ -66,4 +66,4 @@ jobs:
             touch backend/.env 
             # docker compose down frontend
             docker compose up -d --no-deps --force-recreate frontend
-            frontend/.env backend/.env
+            rm frontend/.env backend/.env
