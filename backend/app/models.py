@@ -1,7 +1,7 @@
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
-
+# Just a test
 # Shared properties
 class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
