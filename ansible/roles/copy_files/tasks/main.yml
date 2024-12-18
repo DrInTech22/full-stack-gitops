@@ -10,12 +10,3 @@
     src: ../monitoring/
     dest: /home/ubuntu/monitoring/
     force: yes
-
-# - name: Copy postgres password file
-#   copy:
-#     src: ../POSTGRES_PASSWORD.txt
-#     dest: /home/ubuntu/POSTGRES_PASSWORD.txt
-#     mode: '0600'
-#     owner: ubuntu
-#     group: ubuntu
-#     force: yes
