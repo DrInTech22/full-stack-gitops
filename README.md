@@ -37,7 +37,8 @@ This project uses GitOps principles to streamline infrastructure and application
 
 
 ## Project Architecture
-- hello
+<img src=".assets/gitops.png" alt="Architecture Image" />
+
 
 ## Project Structure
 Infrastructure Branches: `infra_main` and `infra_features`
@@ -150,8 +151,3 @@ The two branches will start where continuous
   - Merge from `integration` to `deployment`: Deploys the application stack to the provisioned cloud infrastructure.
     - `cd-frontend.yml`: This pipeline is triggered when changes are made to the `frontend/` folder. It pulls the updated docker image and deploys it.
     - `cd-backend.yml`: This pipeline is triggered when changes are made to the `backend/` folder. It pulls the updated docker image and deploys it.
-
-
-
-
-
